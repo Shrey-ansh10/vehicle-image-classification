@@ -106,8 +106,15 @@ Based on experimental results, several approaches could enhance model performanc
 vehicle-image-classification/
 │
 ├── Image Classification Project.ipynb    # Main notebook with implementation and analysis
+├── models/                              # Directory containing trained models
+│   ├── vehicle_image_classification_model_1_v2.keras    # Model with Exponential Decay strategy
+│   └── vehicle_image_classification_model_2.keras       # Model with ReduceLROnPlateau strategy
 └── README.md                            # Project documentation
 ```
+
+The `models/` directory contains two trained models:
+- `model_1_v2`: Implements exponential decay learning rate strategy (trained for 11+10 epochs)
+- `model_2`: Uses ReduceLROnPlateau for adaptive learning rate adjustment (trained for up to 20 epochs)
 
 ## 🎓 Key Learning Outcomes
 1. Model Architecture:
