@@ -1,93 +1,127 @@
 # AutoVision: Multi-Class Vehicle Recognition with CNNs
 
 ## 📝 Project Overview
-AutoVision is a deep learning-based computer vision project that focuses on accurate multi-class vehicle classification using Convolutional Neural Networks (CNNs). The project implements state-of-the-art deep learning techniques to classify different types of vehicles from images, demonstrating the practical application of computer vision in automotive and transportation sectors.
+AutoVision is a deep learning-based computer vision project focused on multi-class vehicle classification using Convolutional Neural Networks (CNNs). The project implements a systematic approach to train and evaluate models for classifying 7 different types of vehicles, exploring various learning rate strategies and addressing critical challenges like overfitting and class imbalance.
 
 ## 🎯 Objectives
-- Develop a robust CNN model for multi-class vehicle classification
-- Implement and compare different learning rate strategies
-- Optimize model performance through data augmentation
-- Evaluate model performance using various metrics
-- Create a scalable and maintainable deep learning pipeline
+- Develop and evaluate CNN models for 7-class vehicle classification
+- Compare two learning rate strategies: Exponential Decay and ReduceLROnPlateau
+- Implement effective data augmentation and regularization techniques
+- Address class imbalance using computed class weights
+- Analyze model performance through comprehensive metrics and visualizations
 
 ## 🛠️ Technologies Used
 - **Python** - Primary programming language
-- **TensorFlow & Keras** - Deep learning framework
+- **TensorFlow & Keras** - Deep learning framework and image processing
 - **NumPy** - Numerical computing and array operations
 - **Pandas** - Data manipulation and analysis
-- **Matplotlib & Seaborn** - Data visualization
-- **scikit-learn** - Model evaluation metrics
-- **OpenCV** - Image processing operations
+- **Matplotlib & Seaborn** - Data visualization and performance plots
+- **scikit-learn** - Model evaluation metrics and class weight computation
 
 ## 📊 Methodology
 
 ### 1. Data Preprocessing
-- **Image Loading**: Implemented systematic loading of vehicle images from organized class directories
-- **Data Augmentation**: Applied multiple augmentation techniques:
-  - Rotation (±20 degrees)
-  - Width and height shifting
-  - Brightness adjustment
-  - Zoom variation
+- **Image Loading**: Implemented using TensorFlow/Keras' ImageDataGenerator for efficient batch processing
+- **Data Augmentation**: Applied comprehensive augmentation techniques:
+  - Rotation (±30 degrees)
+  - Width and height shifting (30%)
+  - Brightness adjustment (0.8-1.2 range)
+  - Zoom variation (30%)
   - Horizontal flipping
   - Rescaling pixel values to [0,1]
+- **Data Split**: 80-20 train-validation split using validation_split parameter
 
 ### 2. Model Architecture
-The CNN architecture consists of multiple convolutional and pooling layers followed by dense layers:
+Two CNN models were implemented with identical architectures but different learning rate strategies:
 ```
-- Convolutional layers with increasing filter sizes
-- MaxPooling layers for spatial dimension reduction
-- Dropout layers for regularization
-- Dense layers for final classification
-- Softmax activation for multi-class output
+1. Input Layer (224x224x3)
+2. Convolutional Layers:
+   - Conv2D(32) + BatchNorm + MaxPool
+   - Conv2D(64) + BatchNorm + MaxPool
+   - Conv2D(128) + BatchNorm + MaxPool
+3. Global Average Pooling
+4. Dense Layer (128 units) with ReLU
+5. Dropout (0.5) for regularization
+6. Output Layer (7 units) with Softmax
 ```
 
-### 3. Training Strategy
-- **Batch Size**: Optimized for memory efficiency and training speed
-- **Learning Rate Management**:
-  - Implemented Exponential Decay strategy
-  - Tested ReduceLROnPlateau for adaptive learning rate adjustment
-- **Early Stopping**: Prevented overfitting by monitoring validation metrics
+### 3. Learning Rate Strategies
+#### Model 1: Exponential Decay
+- Initial learning rate: 1e-3
+- Decay steps: 1000
+- Decay rate: 0.96
+- Training conducted in two phases (11 + 10 epochs)
 
-### 4. Model Evaluation
-Comprehensive evaluation using multiple metrics:
-- Accuracy and Loss curves
-- Precision, Recall, and F1-Score
-- Confusion Matrix
-- Classification Report
-- Cross-validation scores
+#### Model 2: ReduceLROnPlateau
+- Initial learning rate: 1e-3
+- Reduction factor: 0.3
+- Patience: 3 epochs
+- Minimum learning rate: 1e-6
+- Maximum epochs: 20
 
-## 📈 Results
-- Successfully implemented a multi-class vehicle classification system
-- Achieved significant accuracy in vehicle type prediction
-- Demonstrated effective handling of overfitting through regularization techniques
-- Established optimal learning rate strategies for model convergence
+### 4. Training Features
+- **Batch Size**: 32 for optimal memory usage
+- **Class Weights**: Computed and applied to handle class imbalance
+- **Early Stopping**: Monitored validation loss with patience=5
+- **Best Weights Restoration**: Enabled for optimal model selection
+
+## 📈 Results & Analysis
+
+### Model 1 (Exponential Decay)
+- Initial performance: ~71% test accuracy
+- Extended training led to overfitting:
+  - Decreasing validation accuracy
+  - Increasing validation loss
+  - Poor generalization on unseen data
+- Confusion matrix showed inconsistent performance across classes
+
+### Model 2 (ReduceLROnPlateau)
+- Better generalization compared to Model 1
+- More stable training metrics
+- Adaptive learning rate helped prevent overfitting
+- Achieved accuracy within the optimal range (70-85%)
 
 ## 🔍 Key Findings
-1. Data augmentation significantly improved model generalization
-2. Learning rate decay strategies showed notable impact on training stability
-3. Model demonstrated robust performance across different vehicle classes
-4. Dropout layers effectively prevented overfitting
+1. Learning Rate Impact:
+   - Exponential decay showed limitations in preventing overfitting
+   - ReduceLROnPlateau provided better adaptation to training dynamics
+2. Model Architecture Insights:
+   - Base CNN architecture (3 conv layers) achieved reasonable performance
+   - BatchNormalization and Dropout were crucial for training stability
+3. Training Observations:
+   - Class weights effectively addressed imbalance issues
+   - Early stopping prevented significant overfitting
+   - Model performance plateaued in the 70-85% accuracy range
 
-## 🚀 Future Improvements
-- Integration of transfer learning using pre-trained models (ResNet, VGG)
-- Implementation of more sophisticated data augmentation techniques
-- Exploration of model compression for mobile deployment
-- Addition of real-time classification capabilities
-- Integration with object detection for complete vehicle analysis
+## 🚀 Scope for Improvement
+Based on experimental results, several approaches could enhance model performance:
+- Implement transfer learning using pre-trained models (ResNet, VGG)
+- Explore more advanced model architectures beyond the base 3-layer CNN
+- Investigate additional regularization techniques
+- Implement cross-validation for more robust evaluation
+- Fine-tune hyperparameters more extensively
 
 ## 📦 Project Structure
 ```
 vehicle-image-classification/
 │
-├── Image Classification Project.ipynb    # Main project notebook
+├── Image Classification Project.ipynb    # Main notebook with implementation and analysis
 └── README.md                            # Project documentation
 ```
 
-## 🎓 Lessons Learned
-- Importance of systematic data preprocessing in computer vision
-- Impact of learning rate strategies on model convergence
-- Value of comprehensive model evaluation metrics
-- Significance of data augmentation in improving model robustness
+## 🎓 Key Learning Outcomes
+1. Model Architecture:
+   - Simple CNN architectures can achieve reasonable performance (70-85% accuracy)
+   - Additional complexity might be needed for higher accuracy
+
+2. Training Dynamics:
+   - Different learning rate strategies significantly impact model convergence
+   - ReduceLROnPlateau provides better adaptation than fixed decay schedules
+
+3. Performance Optimization:
+   - Class weights are essential for imbalanced datasets
+   - Early stopping and learning rate adaptation prevent overfitting
+   - Comprehensive evaluation metrics are crucial for understanding model behavior
 
 ## 📫 Contact
 For any queries regarding this project, please feel free to raise an issue in the repository.
